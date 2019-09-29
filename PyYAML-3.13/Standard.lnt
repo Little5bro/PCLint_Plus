@@ -1,0 +1,6 @@
+-width(0, 0)
+-ha_1
+-format=%(%f(%l)\s:\s%)%t\s%n:\s%m
+
+
+

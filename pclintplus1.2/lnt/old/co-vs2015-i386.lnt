@@ -1,0 +1,4 @@
+co-vs2015-shared.lnt
+
++libh(co-vs2015-i386.h)
+-header(co-vs2015-i386.h)

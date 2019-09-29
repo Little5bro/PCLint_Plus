@@ -1,0 +1,4 @@
+This directory contains obsolete compiler configuration files that will be removed from a future version.
+
+Please use pclp_config to generate compiler configurations for Visual Studio and GCC that will be more
+comprehensive and accurate than a static configuration file will be.
