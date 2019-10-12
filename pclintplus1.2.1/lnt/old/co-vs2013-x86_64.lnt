@@ -1,0 +1,181 @@
+/***********************************/
+/* Language version and extensions */
+/***********************************/
+-std=c++11  // Enable C++11 support
+-$          // Enable $ as an identifier character
++fan        // Enable support for anonymous unions
++fdi        // Search including directory
++fsi        // Search include stack for headers
++frc        // Enable MSVC behavior with regards to handling of commas in macro expansions involving __VA_ARGS__
++fbl        // Search dependent base classes for unqualified lookup in a class template
++fei        // Enumerations are always int
++fur        // Allow unions to contain reference members
++frd        // Allow redefinition of default parameters for member functions of a class template
++fum        // A user-declared move operation will only delete the corresponding copy operation
++ffv        // Implicit conversion from function pointers to void pointers
++flp        // Support the C++98 definition of null pointer constant
++fnf        // Fall back on operator new when operator new[] cannot be found
++fes        // Search enclosing scopes for friend tag declarations
++ffw        // A friend declaration may act as a forward declaration
++fma        // Microsoft Asm blocks
++fdt        // Enable delayed template parsing
++fti        // Initialize pre-defined types from type_info
++fms        // Various Microsoft happenings
+-fon        // Disable alternative C++ tokens for logical operators
++fzl ++fzl  // sizeof result type is (unsigned) long long
++fwc        // internal wchar_t
++fwu        // wchar_t is unsigned
+
+/****************************************/
+/* Non-standard preprocessor directives */
+/****************************************/
++ppw(using)
++ppw(import)
+
+/**************/
+/* Type sizes */
+/**************/
+-ss2        // shorts are 2 bytes
+-si4        // integers are 4 bytes
+-sp8        // pointers are 8 bytes
+-sld8       // sizeof(long double) is 8
+
+/***********/
+/* Headers */
+/***********/
+-header(co-vs2013-x86_64.h)
++libh(co-vs2013-x86_64.h)
+
+/****************/
+/* Suppressions */
+/****************/
+-wlib(1)    // Disable non-error messages from library headers
+-elib(19)   // Suppress 'useless declaration' for spurious ';' in headers
+-e714 -e534 -e537
+-elibmacro(1032)
+-emacro(505 792 1773,va_start)
+-estring(9051 9052,_inline,_declspec,_stdcall)
+-estring(9022,__identifier)
+
+/*************************/
+/* Non-standard keywords */
+/*************************/
+-d__FUNCDNAME__="<decorated name of the enclosing function>"
+-d__FUNCSIG__="<signature of the enclosing function>"
+-dL__FUNCTION__{L"<undecorated name of the enclosing function>"}
++rw(__alignof)
++rw(__asm)
++rw(__cdecl)
++rw(__declspec)
++rw(__fastcall)
++rw(__finally)
++rw(__forceinline)
++rw(__if_exists)
++rw(__if_not_exists)
++rw(__inline)
++rw(__int16)
++rw(__int32)
++rw(__int64)
++rw(__int8)
++rw(__interface)
++rw(__leave)
++rw(__multiple_inheritance)
++rw(__single_inheritance)
++rw(__stdcall)
++rw(__super)
++rw(__thiscall)
++rw(__try)
++rw(__finally)
++rw(__unaligned)
++rw(__uuidof)
++rw(__virtual_inheritance)
++rw(__w64)
++rw(__wchar_t)
++rw(__gc, ___identifier, __nogc, __pin, __try_cast, __value)
+
++rw(__is_interface_class)
++rw(__is_sealed)
++rw(__is_destructible)
++rw(__is_nothrow_destructible)
++rw(__ptr64)
++rw(__ptr32)
++rw(__sptr)
++rw(__uptr)
++rw(_int8)
++rw(_int16)
++rw(_int32)
++rw(_int64)
++rw(_asm)
++rw(_alignof)
++rw(__builtin_alignof)
++rw(_cdecl)
++rw(_fastcall)
++rw(_stdcall)
++rw(_thiscall)
++rw(_uuidof)
++rw(_inline)
++rw(_declspec)
+
+/**********/
+/* Macros */
+/**********/
+-d__try_cast=dynamic_cast
+-"d__identifier(x)=___identifier x"
+-d_declspec=__declspec
+-d_inline=__inline
+-d_stdcall=__stdcall
+-d__pragma(x)=
+-d_M_X64
+
+++doffsetof(s,m)=__builtin_offsetof(s,m)
+
+/********************************/
+/* Type Trait operator keywords */
+/********************************/
+
+/************************************/
+/* Macros based on compiler options */
+/************************************/
+// When compiling with /J, use:
+    //+fcu                      // Plain char is unsigned
+    //-d_CHAR_UNSIGNED
+
+// When compiling with /clr, /clr:pure or /clr:safe, use:
+    //-d__cplusplus_cli=200406  // for all 3
+    //-d_M_CEE_PURE             // for /clr:pure
+    //-d_M_CEE_SAFE             // for /clr:safe
+    //-d_MANAGED                // for /clr
+
+// When using any /clr form, use:
+    //-d_M_CEE
+
+// When compiling with /GX or /EH, use:
+    //-d_CPPUNWIND      // Enable Exception Handling
+
+// When compiling for Win64, use:
+    //-d_WIN64
+
+// When compiling with /Wp64, use:
+    //-d_Wp64           // 64-bit portability
+
+// When compiling with the /RTC option, use:
+    //-d__MSVC_RUNTIME_CHECKS  // Using such checks
+
+// When compiling with /openmp, use:
+    //-d_OPENMP=200203         // OpenMP specification date
+
+// When compiling with /Zl, use:
+    //-d_VC_NODEFAULTLIB       // Omit default library name in *.obj file
+
+// For DLL or Multithreads, use:
+
+    //-d_AFXDLL   // making a DLL
+    //-d_DLL      // ditto
+
+-e19
+
+/****************/
+/* Boost Macros */
+/****************/
+++dBOOST_MSVC=1400
+--uBOOST_PP_VARIADICS

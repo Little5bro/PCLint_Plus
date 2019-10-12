@@ -9,6 +9,7 @@ from argparse import ArgumentParser
 
 #import pandas as pd
 #import numpy as np
+pathFilter=['dot2_asn1']
 
 
 Warning_match = re.compile("(?P<path>.*)warning (?P<Warncode>[0-9]+):(?P<content>.*)")
@@ -17,8 +18,18 @@ Error_match = re.compile("(?P<path>.*)error (?P<Warncode>[0-9]+):(?P<content>.*)
 
 baseline_match = re.compile("(?P<basename>.*)\((?P<line>[0-9]+)\)")
 
+
+def checkIsFiltered(path):
+    for x in pathFilter:
+        if x in path:
+            print("++++++++++ checkIsFiltered returns 1 ++++++++++")
+            return 1
+    return 0
+
+
 class Filter_warning():
     def __init__(self,Type_name):
+        self.path = ''
         self.basename = ''
         self.line = ''
         self.Warning_type = ''
@@ -31,7 +42,7 @@ class Filter_Run():
         self.output_file = output_file
         self.input_file = input_file
         self.splitlinenum = 600000
-        self.Title = ['FileName','Line','Type','WarnType','Warnspec']
+        self.Title = ['Path','FileName','Line','Type','WarnType','Warnspec']
         
         self.FileCheck()
 
@@ -64,7 +75,8 @@ class Filter_Run():
 
     def WriteCsvFile(self,tmplog):
         if isinstance(tmplog,Filter_warning):
-            self.csvHandle.writerow([tmplog.basename,tmplog.line,tmplog.Type_name,tmplog.Warning_type,tmplog.content])
+            if checkIsFiltered(tmplog.path)==0:
+                self.csvHandle.writerow([tmplog.path,tmplog.basename,tmplog.line,tmplog.Type_name,tmplog.Warning_type,tmplog.content])
 
     def CheckCompile(self,logline,Type_match,Type_name):
         result = re.match(Type_match,logline)
@@ -75,6 +87,7 @@ class Filter_Run():
                 if baseline_result:
                     basename = baseline_result.group('basename').split('/')[-1]
                     tmp_warning.basename = basename
+                    tmp_warning.path = baseline_result.group('basename')[:-len(basename)]
                     tmp_warning.line = baseline_result.group('line')
             tmp_warning.Warning_type = result.group('Warncode')
             tmp_warning.content = result.group('content').strip()

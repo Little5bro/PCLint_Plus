@@ -1,0 +1,8 @@
+co-vs2015-shared.lnt
+
++fzl ++fzl  // sizeof result type is (unsigned) long long
+-sp8        // pointers are 8 bytes
+-d_M_X64
+
++libh(co-vs2015-x86_64.h)
+-header(co-vs2015-x86_64.h)
