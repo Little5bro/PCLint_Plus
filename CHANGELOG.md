@@ -1,5 +1,14 @@
 # PclintPlus Changelog
 
+## What's new in 1.2.0_191022
+
+_Release Date: 2019/10/22_
+
+### Improved
+
+1. Add "au-misra3.lnt" for codecheck based on MISRA-C:2012 Guidelines
+2. Add pclint statistics.
+
 ## What's new in 1.1.0_191012
 
 _Release Date: 2019/10/12_

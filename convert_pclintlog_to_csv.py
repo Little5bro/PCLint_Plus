@@ -9,7 +9,19 @@ from argparse import ArgumentParser
 
 #import pandas as pd
 #import numpy as np
-pathFilter=['dot2_asn1']
+Stack_Filter=['dot2_asn1',
+            ]
+APP_Filter=[R'/ALPSCommonUtilitiesLib/',
+            R'/fake_dot23/',
+            R'/SDH/fake/',
+            R'/asn1c/headers/asn_headers/',
+            R'/asn1c/src/',
+            R'/UsecaseASN/asn/',
+            R'/CV2XASN/',
+            R'/J2735ASN/',
+            R'/test/',
+            R'/unittest/'
+            ]
 
 
 Warning_match = re.compile("(?P<path>.*)warning (?P<Warncode>[0-9]+):(?P<content>.*)")
@@ -19,11 +31,23 @@ Error_match = re.compile("(?P<path>.*)error (?P<Warncode>[0-9]+):(?P<content>.*)
 baseline_match = re.compile("(?P<basename>.*)\((?P<line>[0-9]+)\)")
 
 
+def getShortPath(path):
+    s=R"/SourceCode/"
+    lens=len(s)
+    path=path[0:len(path)-1]
+    index=path.rfind(s)
+    path=path[index+lens:]
+    return path
+
 def checkIsFiltered(path):
-    for x in pathFilter:
-        if x in path:
-            print("++++++++++ checkIsFiltered returns 1 ++++++++++")
-            return 1
+    if  R"/CV2X_APP" in path:
+        for x in APP_Filter:
+            if x in path:
+                return 1
+    else:
+        for x in Stack_Filter:
+            if x in path:
+                return 1
     return 0
 
 
@@ -75,8 +99,8 @@ class Filter_Run():
 
     def WriteCsvFile(self,tmplog):
         if isinstance(tmplog,Filter_warning):
-            if checkIsFiltered(tmplog.path)==0:
-                self.csvHandle.writerow([tmplog.path,tmplog.basename,tmplog.line,tmplog.Type_name,tmplog.Warning_type,tmplog.content])
+            if checkIsFiltered(tmplog.path)==0 and (tmplog.basename != "project.lnt"):
+                self.csvHandle.writerow([getShortPath(tmplog.path),tmplog.basename,tmplog.line,tmplog.Type_name,tmplog.Warning_type,tmplog.content])
 
     def CheckCompile(self,logline,Type_match,Type_name):
         result = re.match(Type_match,logline)

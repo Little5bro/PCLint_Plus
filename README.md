@@ -8,7 +8,7 @@ Usage
 
 Change path to project folder which includes `src` folder, `autobuild.sh` script, etc. and then run `run_pclint_plus_codecheck.sh` ro do codecheck.
 ```Bash
-./run_pclint_plus_codecheck.sh
+./PCLint_Plus/run_pclint_plus_codecheck.sh
 ```
 
-the output cvs file is located at `logcsv` folder.
+the output cvs file is located at `/PCLint_Plus/logcsv` folder.

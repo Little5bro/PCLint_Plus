@@ -106,10 +106,12 @@ if __name__ == "__main__":
     if os.path.exists(diff_folder) == False:
         os.mkdir(diff_folder)
 
+    exclude = set(['statistics.csv'])
     for dirpath,dirnames,files in os.walk(last_folder):
-        filesraw = [file for file in files]
+        filesraw = [file for file in files if file not in exclude]
 
     for dirpath,dirnames,files in os.walk(new_folder):
+        files = [file for file in files if file not in exclude]
         for filenew in files:
             if filenew in filesraw:
                 rawfile = last_folder+'/'+filenew

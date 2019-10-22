@@ -1,6 +1,7 @@
 #!/bin/bash
 
-workspace="${PWD}"
+projectdir="${PWD}"
+workspace="$projectdir/PCLint_Plus/"
 pclintdir="$workspace/pclintplus1.2.1"
 lintdir="$pclintdir/config"
 imposter_log="$lintdir/imposter-log"
@@ -10,10 +11,14 @@ logcsvdir="$workspace/logcsv/"
 export PATH=$PATH:$pclintdir:$lintdir
 export IMPOSTER_LOG="$imposter_log"
 
-rm -rf $logdir
-rm -rf $logcsvdir
+rm -rf $logdir $logcsvdir
+mkdir -p $logdir $logcsvdir
 
-cp Standard.lnt $lintdir
+codespace=$(find $projectdir -type f -name CHANGELOG.md | head -n 1)
+codespace=${codespace%/*}'/'
+
+cd $workspace
+cp Standard.lnt au-misra3.lnt $lintdir
 
 #echo "install python module"
 #cd ${workspace}/PyYAML-3.13
@@ -31,21 +36,10 @@ python pclp_config.py --compiler=gcc \
                       
 gcc -o imposter imposter.c
 
-cd $workspace
-mkdir -p $logdir
-mkdir -p $logcsvdir
-
-SRC_DIR=$(find $workspace -type f -name CHANGELOG.md | head -n 1)
-SRC_DIR=${SRC_DIR%/*}'/'
-
-cd $SRC_DIR
-mkdir build
-
+cd $codespace
 export IMPOSTER_COMPILER=/usr/bin/cc
-command -v cmake >/dev/null || { curl -O http://10.25.15.53:1080/tools/cmake/cmake-3.14.1.tar.gz;  tar -xf cmake-3.14.1.tar.gz; cd cmake-3.14.1; ./bootstrap && make > /dev/null && make install > /dev/null; }
-
-cd ${SRC_DIR}build
-cmake -version
+mkdir -p build
+cd ${codespace}build
 CC=imposter cmake ..
 rm $imposter_log
 make clean
@@ -60,15 +54,17 @@ python pclp_config.py   --compiler=gcc \
                         --imposter-file=$imposter_log \
                         --config-output-lnt-file=project.lnt \
                         --generate-project-config
-cp co-gcc.lnt co-gcc.h Standard.lnt project.lnt ${workspace}
+cp co-gcc.lnt co-gcc.h Standard.lnt project.lnt au-misra3.lnt ${workspace}
 
 cd $workspace
-pclp64_linux co-gcc.lnt Standard.lnt project.lnt > ${logdir}cv2x_app.log
+pclp64_linux co-gcc.lnt Standard.lnt project.lnt au-misra3.lnt > ${logdir}user_app.log
 
-python changelogtocsv_pclint.py --inputlogfile=${logdir}cv2x_app.log \
-                                --outputcsvfile=${logcsvdir}cv2x_app
+python convert_pclintlog_to_csv.py --inputlogfile=${logdir}user_app.log \
+                                   --outputcsvfile=${logcsvdir}user_app
+
+python do_pclintcsv_statistics.py --pclintfile=${logcsvdir}user_app.csv \
+                                  --outputfile=${logcsvdir}statistics.csv
 
 cd $logcsvdir
 tar -zcvf ../log.csv.tar.gz *
 mv ../log.csv.tar.gz log.csv.tar.gz
-
